@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#fff0f4" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>For Dineth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nunito:wght@500;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #5c3142;
+      --muted: #8d6272;
+      --rose: #e25b86;
+      --rose-deep: #c74370;
+      --cream: #fffaf8;
+      --line: #f3d5df;
+      --shadow: 0 22px 50px rgba(176, 84, 116, 0.16);
+    }
+
+    * { box-sizing: border-box; }
+
+    [hidden] { display: none !important; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      overflow-x: hidden;
+    }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: Nunito, "Trebuchet MS", ui-rounded, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 12%, #ffd9e6 0 18%, transparent 19%),
+        radial-gradient(circle at 92% 8%, #ffe7c8 0 16%, transparent 17%),
+        radial-gradient(circle at 84% 88%, #ffd0e2 0 20%, transparent 21%),
+        linear-gradient(180deg, #fff8f6 0%, #fff0f4 50%, #fff6ec 100%);
+    }
+
+    .floaters {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .floaters span {
+      position: absolute;
+      font-size: 1.2rem;
+      opacity: 0.45;
+      animation: drift 9s ease-in-out infinite;
+    }
+
+    .floaters span:nth-child(1) { left: 8%; top: 18%; animation-delay: 0s; }
+    .floaters span:nth-child(2) { left: 86%; top: 22%; animation-delay: 1.2s; }
+    .floaters span:nth-child(3) { left: 14%; top: 72%; animation-delay: 2s; }
+    .floaters span:nth-child(4) { left: 78%; top: 68%; animation-delay: 0.6s; }
+    .floaters span:nth-child(5) { left: 48%; top: 10%; animation-delay: 1.8s; }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding:
+        max(20px, env(safe-area-inset-top))
+        max(16px, env(safe-area-inset-right))
+        max(32px, env(safe-area-inset-bottom))
+        max(16px, env(safe-area-inset-left));
+    }
+
+    .card {
+      width: min(640px, 100%);
+      background: rgba(255, 250, 248, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+      padding: 28px 26px 24px;
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; animation: rise 0.45s ease; }
+
+    .script {
+      margin: 0;
+      font-family: "Great Vibes", cursive;
+      font-size: 3rem;
+      font-weight: 400;
+      line-height: 1;
+      color: var(--rose-deep);
+    }
+
+    h2 {
+      margin: 8px 0 0;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+
+    .lede {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    form { margin-top: 22px; }
+
+    label {
+      display: block;
+      margin: 14px 0 6px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font: inherit;
+      font-size: 16px;
+      color: var(--ink);
+    }
+
+    input:focus {
+      outline: 3px solid rgba(226, 91, 134, 0.25);
+      border-color: #f3a0b8;
+    }
+
+    .error {
+      min-height: 1.3em;
+      margin: 10px 0 0;
+      color: var(--rose-deep);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      line-height: 1.25;
+      border-radius: 999px;
+      padding: 14px 18px;
+      min-height: 48px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-fill {
+      background: linear-gradient(180deg, #ff8eae, var(--rose));
+      color: white;
+      box-shadow: 0 8px 0 var(--rose-deep);
+    }
+
+    .btn-fill:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 0 6px 0 var(--rose-deep);
+    }
+
+    .btn-ghost {
+      background: #fff;
+      color: var(--ink);
+      box-shadow: 0 8px 0 #f3d5df;
+    }
+
+    .btn-ghost:active {
+      transform: translateY(2px);
+      box-shadow: 0 6px 0 #f3d5df;
+    }
+
+    .full { width: 100%; margin-top: 8px; }
+
+    .choice-row, .letter-actions, .sure-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .choice-row .btn, .letter-actions .btn, .sure-actions .btn { flex: 1; }
+
+    .quiz-list {
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .quiz-list li, .final-q {
+      background: #fff;
+      border-radius: 18px;
+      padding: 12px 12px 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .quiz-list p, .final-q p {
+      margin: 0;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .toggle { display: flex; gap: 6px; flex-shrink: 0; }
+
+    .toggle button {
+      border: 1px solid var(--line);
+      background: #fff7f9;
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 10px 16px;
+      min-height: 44px;
+      min-width: 72px;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .toggle button[aria-pressed="true"] {
+      background: var(--rose);
+      color: white;
+      border-color: var(--rose);
+    }
+
+    .final-q { margin-top: 12px; }
+
+    .letter {
+      margin-top: 18px;
+      font-family: "Cormorant Garamond", Palatino, Georgia, serif;
+      font-size: 1.28rem;
+      line-height: 1.55;
+    }
+
+    .letter p { margin: 0 0 1em; }
+
+    .letter p:last-child { margin-bottom: 0; }
+
+    #finale {
+      margin-top: 18px;
+      text-align: center;
+    }
+
+    #finale[hidden] { display: none; }
+
+    .love {
+      font-size: 1.15rem;
+      padding: 16px 28px;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .modal[hidden] { display: none; }
+
+    .backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(92, 49, 66, 0.45);
+    }
+
+    .dialog {
+      position: relative;
+      width: min(420px, 100%);
+      max-height: calc(100dvh - 36px);
+      overflow: auto;
+      background: #fff;
+      border: 1px solid #ffd0df;
+      border-radius: 24px;
+      padding: 22px 20px 18px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      animation: rise 0.28s ease;
+    }
+
+    .dialog p {
+      margin: 0;
+      font-size: 1.08rem;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .dialog-actions:empty { display: none; }
+
+    .btn.fleeing {
+      position: fixed;
+      z-index: 40;
+      width: auto;
+      flex: none;
+      margin: 0;
+    }
+
+    .dialog.giant {
+      width: min(560px, 100%);
+      padding: 42px 28px 36px;
+    }
+
+    .dialog.giant p {
+      font-family: "Great Vibes", cursive;
+      font-size: clamp(2.4rem, 7vw, 3.6rem);
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--rose-deep);
+    }
+
+    body.scene-open {
+      background: #fff;
+    }
+
+    body.scene-open .floaters,
+    body.scene-open .wrap,
+    body.scene-open .rain {
+      display: none;
+    }
+
+    .tree-scene {
+      min-height: 100dvh;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 8px;
+      padding:
+        max(24px, env(safe-area-inset-top))
+        max(16px, env(safe-area-inset-right))
+        max(28px, env(safe-area-inset-bottom))
+        max(16px, env(safe-area-inset-left));
+      text-align: center;
+      background:
+        radial-gradient(circle at 50% 18%, #fff4f7 0 28%, transparent 29%),
+        #fff;
+    }
+
+    .tree {
+      position: relative;
+      width: min(440px, 100%);
+      height: 300px;
+    }
+
+    .canopy {
+      width: 230px;
+      height: 168px;
+      margin: 0 auto;
+      background:
+        radial-gradient(circle at 28% 35%, #b7e7a4 0 18%, transparent 19%),
+        radial-gradient(circle at 70% 30%, #8dce78 0 22%, transparent 23%),
+        radial-gradient(circle at 50% 60%, #4eaa62, #2f8a49);
+      border-radius: 50%;
+    }
+
+    .trunk {
+      width: 34px;
+      height: 120px;
+      margin: -28px auto 0;
+      background: linear-gradient(90deg, #c17a45, #8d532c);
+      border-radius: 12px;
+    }
+
+    .branch {
+      position: absolute;
+      left: 36px;
+      right: 36px;
+      top: 158px;
+      height: 18px;
+      background: linear-gradient(#c4844d, #8d532c);
+      border-radius: 12px;
+    }
+
+    .couple {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .person {
+      width: 78px;
+      text-align: center;
+    }
+
+    .person.her { transform: rotate(8deg); }
+    .person.him { transform: rotate(-8deg); }
+
+    .head {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto;
+      border-radius: 50%;
+      background: #ffd8c2;
+      position: relative;
+      box-shadow: inset 0 -8px 0 rgba(214, 140, 120, 0.18);
+    }
+
+    .person.him .head { background: #f3c7a8; }
+
+    .head::before,
+    .head::after {
+      content: "";
+      position: absolute;
+      top: 24px;
+      width: 6px;
+      height: 6px;
+      background: #4a2c38;
+      border-radius: 50%;
+    }
+
+    .head::before { left: 14px; }
+    .head::after { right: 14px; }
+
+    .blush {
+      position: absolute;
+      top: 32px;
+      width: 10px;
+      height: 6px;
+      background: #ffb3c4;
+      border-radius: 50%;
+    }
+
+    .blush.left { left: 6px; }
+    .blush.right { right: 6px; }
+
+    .bow {
+      position: absolute;
+      top: -6px;
+      right: -2px;
+      font-size: 0.9rem;
+    }
+
+    .torso {
+      width: 52px;
+      height: 34px;
+      margin: -6px auto 0;
+      border-radius: 18px 18px 14px 14px;
+    }
+
+    .person.her .torso { background: #ff8eae; }
+    .person.him .torso { background: #7eb6ff; }
+
+    .kiss {
+      align-self: center;
+      margin-bottom: 42px;
+      font-size: 1.35rem;
+    }
+
+    .rhyme {
+      margin: 18px 0 0;
+      font-family: "Cormorant Garamond", Palatino, Georgia, serif;
+      font-size: clamp(1.7rem, 4vw, 2.2rem);
+      line-height: 1.2;
+      color: var(--ink);
+    }
+
+    .together {
+      margin: 10px 0 0;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--rose-deep);
+    }
+
+    .banner {
+      margin-top: 18px;
+      max-width: calc(100vw - 36px);
+      background: linear-gradient(180deg, #ff8eae, var(--rose));
+      color: white;
+      font-family: "Great Vibes", cursive;
+      font-size: clamp(1.8rem, 8vw, 3rem);
+      line-height: 1.05;
+      padding: 16px 22px 18px;
+      border-radius: 18px;
+      box-shadow: 0 10px 0 var(--rose-deep);
+    }
+
+    .restart {
+      margin-top: 22px;
+      background: #fff;
+      color: var(--ink);
+      box-shadow: 0 8px 0 #f3d5df;
+    }
+
+    .rain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 20;
+      overflow: hidden;
+    }
+
+    .rain span {
+      position: absolute;
+      top: -12%;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    .shake { animation: shake 0.42s ease; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    @keyframes fall {
+      to { transform: translateY(115vh) rotate(18deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    @media (max-width: 560px) {
+      .wrap { place-items: start center; }
+      .card { padding: 22px 16px 18px; border-radius: 22px; }
+      .script { font-size: 2.45rem; }
+      h2 { font-size: 1.2rem; }
+      .quiz-list li, .final-q {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 14px;
+      }
+      .toggle { width: 100%; }
+      .toggle button { flex: 1; }
+      .choice-row, .letter-actions, .dialog-actions { flex-direction: column; }
+      .choice-row .btn, .letter-actions .btn, .dialog-actions .btn { width: 100%; }
+      .letter { font-size: 1.18rem; }
+      .tree { height: 230px; }
+      .canopy { width: 190px; height: 132px; }
+      .rhyme { font-size: 1.55rem; }
+      .restart { width: min(220px, 100%); }
+    }
+
+    @media (max-height: 740px) {
+      .tree { height: 190px; }
+      .canopy { width: 160px; height: 110px; }
+      .branch { top: 118px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .screen.active, .dialog, .floaters span, .love, .rain span, .shake {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="floaters" aria-hidden="true">
+    <span>💗</span><span>🌸</span><span>💋</span><span>💗</span><span>🌷</span>
+  </div>
+
+  <div class="wrap">
+    <main class="card">
+      <section class="screen active" id="screen-login" aria-label="Login">
+        <p class="script">For Dineth</p>
+        <h2>A little note, just for you</h2>
+        <p class="lede">Only one person knows the way in.</p>
+        <form id="login-form">
+          <label for="name">Name</label>
+          <input id="name" name="name" autocomplete="off" required />
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="off" required />
+          <p class="error" id="login-error" role="alert"></p>
+          <button class="btn btn-fill full" type="submit">Open</button>
+        </form>
+      </section>
+
+      <section class="screen" id="screen-mood" aria-label="Mood check">
+        <p class="script">Hey you</p>
+        <h2>Are you still mad at me, my cute little boy?</h2>
+        <div class="choice-row">
+          <button class="btn btn-ghost" id="mad" type="button">To be mad</button>
+          <button class="btn btn-fill" id="not-mad" type="button">Not to be mad</button>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-quiz" aria-label="Relationship quiz">
+        <p class="script">Tiny quiz</p>
+        <h2>Answer with your heart</h2>
+        <p class="lede">Yes or no. I’ll be right here.</p>
+        <ul class="quiz-list" id="quiz-list">
+          <li>
+            <p>Do you like your girlfriend?</p>
+            <div class="toggle">
+              <button type="button" data-q="like" data-a="yes" aria-pressed="false">Yes</button>
+              <button type="button" data-q="like" data-a="no" aria-pressed="false">No</button>
+            </div>
+          </li>
+          <li>
+            <p>Is your girlfriend mean?</p>
+            <div class="toggle">
+              <button type="button" data-q="mean" data-a="yes" aria-pressed="false">Yes</button>
+              <button type="button" data-q="mean" data-a="no" aria-pressed="false">No</button>
+            </div>
+          </li>
+          <li>
+            <p>Does your girlfriend support you?</p>
+            <div class="toggle">
+              <button type="button" data-q="support" data-a="yes" aria-pressed="false">Yes</button>
+              <button type="button" data-q="support" data-a="no" aria-pressed="false">No</button>
+            </div>
+          </li>
+          <li>
+            <p>Is your girlfriend pretty?</p>
+            <div class="toggle">
+              <button type="button" data-q="pretty" data-a="yes" aria-pressed="false">Yes</button>
+              <button type="button" data-q="pretty" data-a="no" aria-pressed="false">No</button>
+            </div>
+          </li>
+          <li>
+            <p>Is your girlfriend your forever partner?</p>
+            <div class="toggle">
+              <button type="button" data-q="forever" data-a="yes" aria-pressed="false">Yes</button>
+              <button type="button" data-q="forever" data-a="no" aria-pressed="false">No</button>
+            </div>
+          </li>
+          <li>
+            <p>Do you love your girlfriend?</p>
+            <div class="toggle">
+              <button type="button" data-q="love" data-a="yes" aria-pressed="false">Yes</button>
+              <button type="button" data-q="love" data-a="no" aria-pressed="false">No</button>
+            </div>
+          </li>
+        </ul>
+        <div class="final-q">
+          <p>Do you want to receive the message from your girlfriend?</p>
+          <div class="toggle">
+            <button type="button" id="message-yes" data-q="message" data-a="yes" aria-pressed="false">Yes</button>
+          </div>
+        </div>
+        <button class="btn btn-fill full" id="to-letter" type="button" disabled>Read her message</button>
+      </section>
+
+      <section class="screen" id="screen-letter" aria-label="Apology letter">
+        <p class="script">My apology</p>
+        <h2>Please read this slowly</h2>
+        <article class="letter">
+          <p>Babe, I’m so sorry for what happened between us. It started that morning when I called you to say I was going to work, and you didn’t respond to me properly. You just said, “OK, bye,” and it really hurt me. I could have just sent you a text saying I was leaving, but I wanted to tell you every day because I get really excited about going to work and wanted to share that with you. Because of that, I got hurt and texted you, saying it was wrong of you to talk to me like that.</p>
+          <p>After that, you got mad at me and ignored me while you were sitting and waiting for that man. I texted you asking you to talk to me while you waited, and you replied, “No, I don’t want to ruin my mood.” You always say that I ruin your mood, your work, and everything, which is so unfair. Even when you ruin my mood, I never say things like that to you, but you always do.</p>
+          <p>Two or three hours later, I asked if you were still mad at me, but you started yelling instead of answering. If you had just answered my question, you could have gone back to your work, scrolled TikTok, or done whatever you wanted. You kept yelling at me without answering, which made me mad too. I grew cold, and harsh words and curses were exchanged, which really hurt me.</p>
+          <p>The next day, I still called you and asked to make up and let go of the anger, but you didn’t care. I tried again the next day, and you still didn’t care, and then you called me without using curse words, so I decided to go to sleep. But while I was on TikTok, the filter malfunctioned, and I saw two terrifying faces in the dark. You know how scared I am of ghosts, and I had nobody else to talk to. I asked you to just stay on call with me, even if we weren’t talking, but you completely ignored me.</p>
+          <p>Feeling helpless, I said, “Screw it, I’m blocking you,” and I blocked you on every social media platform. I cried and had to call my mother at 1:00 AM just to stay on the phone with me so I could fall asleep because I was so terrified.</p>
+          <p>Despite all of that pain—and even though part of me thought we were done—I am still trying. I am building this for you to show that I am improving just like you wanted. I’m hoping you will accept my apology and make things right. Please, I love you.</p>
+        </article>
+        <div class="letter-actions" id="letter-actions">
+          <button class="btn btn-fill" id="accept" type="button">I accept your apology</button>
+          <button class="btn btn-ghost" id="decline" type="button">I don’t accept your apology</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="rain" id="rain" aria-hidden="true"></div>
+
+  <section class="tree-scene" id="tree-scene" hidden>
+    <div class="tree" aria-hidden="true">
+      <div class="canopy"></div>
+      <div class="branch">
+        <div class="couple">
+          <div class="person her">
+            <div class="head"><span class="bow">🎀</span><span class="blush left"></span><span class="blush right"></span></div>
+            <div class="torso"></div>
+          </div>
+          <div class="kiss">💋</div>
+          <div class="person him">
+            <div class="head"><span class="blush left"></span><span class="blush right"></span></div>
+            <div class="torso"></div>
+          </div>
+        </div>
+      </div>
+      <div class="trunk"></div>
+    </div>
+    <p class="rhyme">Dineth and me,<br>sitting in a tree,<br>K-I-S-S-I-N-G</p>
+    <p class="together">We love each other</p>
+    <p class="banner">I love you more and always</p>
+    <button class="btn restart" id="restart" type="button">Restart</button>
+  </section>
+
+  <div class="modal" id="modal" hidden>
+    <div class="backdrop"></div>
+    <div class="dialog" role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-text">
+      <p id="modal-text"></p>
+      <div class="dialog-actions" id="modal-actions"></div>
+    </div>
+  </div>
+
+  <script>
+    const NAME = "dineth";
+    const PASSWORD = "1234";
+    const answers = {};
+
+    const screens = {
+      login: document.getElementById("screen-login"),
+      mood: document.getElementById("screen-mood"),
+      quiz: document.getElementById("screen-quiz"),
+      letter: document.getElementById("screen-letter")
+    };
+
+    const modal = document.getElementById("modal");
+    const dialog = modal.querySelector(".dialog");
+    const modalText = document.getElementById("modal-text");
+    const modalActions = document.getElementById("modal-actions");
+    const loginForm = document.getElementById("login-form");
+    const loginError = document.getElementById("login-error");
+    const toLetter = document.getElementById("to-letter");
+    const rain = document.getElementById("rain");
+
+    function show(name) {
+      Object.values(screens).forEach((screen) => screen.classList.remove("active"));
+      screens[name].classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function closeModal() {
+      modal.hidden = true;
+      dialog.classList.remove("giant");
+      modalActions.replaceChildren();
+    }
+
+    function openModal(text, buttons, options = {}) {
+      modalText.textContent = text;
+      dialog.classList.toggle("giant", Boolean(options.giant));
+      modalActions.replaceChildren();
+      buttons.forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `btn ${item.ghost ? "btn-ghost" : "btn-fill"}`;
+        button.textContent = item.label;
+        button.addEventListener("click", item.onClick);
+        modalActions.appendChild(button);
+        if (item.id) button.id = item.id;
+      });
+      modal.hidden = false;
+      dialog.focus();
+    }
+
+    function quizReady() {
+      const ids = ["like", "mean", "support", "pretty", "forever", "love"];
+      return ids.every((id) => answers[id]) && answers.message === "yes";
+    }
+
+    function refreshQuiz() {
+      toLetter.disabled = !quizReady();
+    }
+
+    function placeButton(button) {
+      const width = button.offsetWidth || 88;
+      const height = button.offsetHeight || 46;
+      const avoid = document.getElementById("still-yes");
+      const avoidRect = avoid ? avoid.getBoundingClientRect() : null;
+      let x = 12;
+      let y = 12;
+      for (let attempt = 0; attempt < 14; attempt += 1) {
+        x = 12 + Math.random() * Math.max(20, window.innerWidth - width - 24);
+        y = 12 + Math.random() * Math.max(20, window.innerHeight - height - 24);
+        if (!avoidRect) break;
+        const clear = x + width < avoidRect.left - 24 || x > avoidRect.right + 24 || y + height < avoidRect.top - 24 || y > avoidRect.bottom + 24;
+        if (clear) break;
+      }
+      button.classList.add("fleeing");
+      button.style.left = `${x}px`;
+      button.style.top = `${y}px`;
+    }
+
+    function openDecline() {
+      openModal("Are you sure?", [
+        {
+          label: "Yes",
+          ghost: true,
+          onClick: () => {
+            openModal("You can’t click this! Try another option.", [
+              { label: "Okay", onClick: openDecline }
+            ]);
+          }
+        },
+        {
+          label: "No",
+          onClick: openAccept
+        }
+      ]);
+    }
+
+    function openAccept() {
+      let dodgesLeft = 1 + Math.floor(Math.random() * 2);
+      openModal("Are you still mad at me?", [
+        {
+          id: "still-yes",
+          label: "Yes",
+          ghost: true,
+          onClick: (event) => {
+            event.preventDefault();
+            event.currentTarget.disabled = true;
+          }
+        },
+        {
+          id: "still-no",
+          label: "No",
+          onClick: (event) => {
+            if (dodgesLeft > 0) {
+              event.preventDefault();
+              dodgesLeft -= 1;
+              placeButton(event.currentTarget);
+              return;
+            }
+            closeModal();
+            openModal("Yeah, you love me!", [
+              { label: "I love you too", onClick: showTreeScene }
+            ]);
+          }
+        }
+      ]);
+    }
+
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const name = document.getElementById("name").value.trim().toLowerCase();
+      const password = document.getElementById("password").value.trim();
+      if (name === NAME && password === PASSWORD) {
+        loginError.textContent = "";
+        show("mood");
+        return;
+      }
+      loginError.textContent = "That’s not the right name or password.";
+      loginForm.classList.remove("shake");
+      void loginForm.offsetWidth;
+      loginForm.classList.add("shake");
+    });
+
+    document.getElementById("mad").addEventListener("click", () => {
+      openModal("You can’t click this! Try the other option.", [
+        { label: "Okay", onClick: closeModal }
+      ]);
+    });
+
+    document.getElementById("not-mad").addEventListener("click", () => {
+      openModal("You chose the right option!", [
+        { label: "Continue", onClick: () => { closeModal(); show("quiz"); } }
+      ]);
+    });
+
+    document.getElementById("screen-quiz").addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-q]");
+      if (!button) return;
+      const question = button.dataset.q;
+      answers[question] = button.dataset.a;
+      document.querySelectorAll(`button[data-q="${question}"]`).forEach((item) => {
+        item.setAttribute("aria-pressed", item === button ? "true" : "false");
+      });
+      refreshQuiz();
+    });
+
+    function saveAnswers() {
+      const payload = { ...answers, name: document.getElementById("name").value.trim() };
+      fetch("/save-answers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).catch(() => {});
+    }
+
+    toLetter.addEventListener("click", () => {
+      if (!quizReady()) return;
+      saveAnswers();
+      show("letter");
+    });
+
+    document.getElementById("accept").addEventListener("click", openAccept);
+
+    document.getElementById("decline").addEventListener("click", openDecline);
+
+    function showTreeScene() {
+      closeModal();
+      document.body.classList.add("scene-open");
+      rain.replaceChildren();
+      document.getElementById("tree-scene").hidden = false;
+    }
+
+    function restart() {
+      closeModal();
+      document.body.classList.remove("scene-open");
+      document.getElementById("tree-scene").hidden = true;
+      rain.replaceChildren();
+      document.getElementById("letter-actions").hidden = false;
+      Object.keys(answers).forEach((key) => delete answers[key]);
+      document.querySelectorAll("button[data-q]").forEach((button) => {
+        button.setAttribute("aria-pressed", "false");
+      });
+      refreshQuiz();
+      loginError.textContent = "";
+      loginForm.reset();
+      show("login");
+    }
+
+    document.getElementById("restart").addEventListener("click", restart);
+  </script>
+</body>
+</html>
